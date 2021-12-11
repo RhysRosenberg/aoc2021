@@ -10,9 +10,7 @@ const
     part = 2
     inp: seq[seq[int]] = readFile("input.txt")
     .splitLines()
-    .map(
-        (x) => x.toSeq.map(
-            (y) => y.int - '0'.int))
+    .mapIt(it.toSeq.mapIt(it.int - '0'.int))
     rowlen = len(inp)
     collen = len(inp[0])
 if part == 1:

@@ -14,14 +14,11 @@ while boards.len > 0 and pulls.len > 0:
     pulls = pulls[1..^1]
     proc bingo_pull(pull: string): (proc(x: seq[seq[string]]): seq[seq[string]]) =
         return proc(board: seq[seq[string]]): seq[seq[string]] =
-            board.map(
-                proc(row: seq[string]): seq[string] = 
-                    row.map(
-                        proc(elem: string): string =
-                            if elem == pull: "" else: elem))
+            board.mapIt(it.mapIt(if it == pull: "" else: it))
     boards = boards.map(bingo_pull(mypull))
     proc check_board(board: seq[seq[string]]): bool =
-        if board.any(proc(row: seq[string]): bool = row.all(proc(x: string): bool = x == "")):
+        #if board.any(proc(row: seq[string]): bool = row.all(proc(x: string): bool = x == "")):
+        if board.anyIt(it.allIt(it == "")):
             return false
         for j in 0..4:
             var cnt = 0;
