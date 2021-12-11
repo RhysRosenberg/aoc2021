@@ -4,7 +4,7 @@ import std/strformat
 import std/sugar
 
 const 
-    part = 1
+    part = 2
     input = readFile("input.txt").splitLines()
 
 type 
@@ -75,18 +75,27 @@ proc flatten(s: Octogrid): seq[int] =
             result.add(item.energy)
 
 
-var allflashstep: int
-for step in 1..1000:
-    print_grid(grid)
-    for i in 0..<grid.len:
-        for j in 0..<grid[i].len:
-            grid[j][i].incenergy
-    grid.print_grid
-    for i in 0..<grid.len:
-        for j in 0..<grid[i].len:
-            grid.update((j, i))
-    grid.cleanup
-    if flatten(grid).foldl(a + b, 0) == 0:
-        allflashstep = step
-        break
-echo "part2: ", allflashstep
+if part == 1:
+    for step in 1..100:
+        for i in 0..<grid.len:
+            for j in 0..<grid[i].len:
+                grid[j][i].incenergy
+        for i in 0..<grid.len:
+            for j in 0..<grid[i].len:
+                grid.update((j, i))
+        grid.cleanup
+    echo "part1: ", flashes
+else:
+    var allflashstep: int
+    for step in 1..1000:
+        for i in 0..<grid.len:
+            for j in 0..<grid[i].len:
+                grid[j][i].incenergy
+        for i in 0..<grid.len:
+            for j in 0..<grid[i].len:
+                grid.update((j, i))
+        grid.cleanup
+        if flatten(grid).foldl(a + b, 0) == 0:
+            allflashstep = step
+            break
+    echo "part2: ", allflashstep
