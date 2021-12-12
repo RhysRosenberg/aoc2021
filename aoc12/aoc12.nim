@@ -5,7 +5,7 @@ import std/sets
 import sugar
 
 let input = readFile("input.txt").splitLines().map((x) => x.split('-')).filterIt(it.len > 1)
-const part = 1
+const part = 2
 
 type 
   Node = ref object
@@ -21,19 +21,36 @@ proc applier(it: seq[string]) =
 
 input.apply(applier)
 
-proc countPaths(g: Table[string, Node], l: string, visited: var HashSet[string]): int = 
+var allpaths: seq[string]
+proc countPaths(g: Table[string, Node], l: string, visited: HashSet[string], doubledon: string = "", path: var seq[string]): int = 
+  #echo "We have entered into ", l, " with links ", g[l].links, " and we doubled on ", doubledon
+  var myp = path
+  myp.add(l)
   if l == "end":
-    return 1
-  var newVisited = visited
+    allpaths.add(myp.foldl(a & "," & b))
+    return 1 # If we reached the end, This is one path
+  var newVisited = visited # Copy the visited set so we can modify it
   if l.allIt(it.isLowerAscii()):
+    # If the cave is small
     newVisited.incl(l)
+  # The paths are all links that were not already visited
   let 
-    n = g[l]
-    paths = n.links.filterIt(not visited.contains(it))
+    paths = g[l].links.filterIt(not visited.contains(it))
+    visitedpaths = g[l].links.filterIt(visited.contains(it))
+  var extra = 0
+  if part == 2 and doubledon == "":
+    # We are testing part 2 and we are not in a doubled-fork
+    # Count the paths going into that doubled-up small cave
+    extra = visitedpaths
+      .filterIt(it != "start" and it != "end")
+      .mapIt(g.countPaths(it, newVisited, it, myp)).foldl(a + b, 0)
   if paths.len == 0:
+    # If there are no paths out of here and we haven't reached the end, there are 0 paths on this branch
     return 0
-  return paths.mapIt(g.countPaths(it, newVisited)).foldl(a + b, 0)
+  # Count all the paths leading out of the paths, and then add them all up 
+  return paths.mapIt(g.countPaths(it, newVisited, doubledon, myp)).foldl(a + b, 0)
 
 var h = initHashSet[string]() 
-echo cavesystem.countPaths("start", h)
-
+var s = newSeq[string]()
+echo "part1: ", cavesystem.countPaths("start", h, "", s)
+echo "part2: ", allpaths.len
