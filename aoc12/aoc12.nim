@@ -3,19 +3,13 @@ import std/sequtils
 import std/tables
 import std/sets
 import sugar
-import system
 
-const 
-  input = readFile("input.txt").splitLines().map((x) => x.split('-')).filterIt(it.len > 1)
-  part = 2
-echo input
+let input = readFile("input.txt").splitLines().map((x) => x.split('-')).filterIt(it.len > 1)
+const part = 1
 
 type 
   Node = ref object
     links: seq[string]
-
-proc `$`(n: Node): string =
-  "Node w/ " & $n.links.len & " links"
 
 var cavesystem: Table[string, Node]
 
@@ -31,7 +25,6 @@ proc countPaths(g: Table[string, Node], l: string, visited: var HashSet[string])
   if l == "end":
     return 1
   var newVisited = visited
-  var forkedproc = 0
   if l.allIt(it.isLowerAscii()):
     newVisited.incl(l)
   let 
