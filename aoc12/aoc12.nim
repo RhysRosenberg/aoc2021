@@ -1,11 +1,3 @@
-<<<<<<< HEAD
-import std/sequtils
-import std/strutils
-
-const input = readFile("test.txt").splitLines()
-
-    
-=======
 import std/strutils
 import std/sequtils
 import std/tables
@@ -62,4 +54,3 @@ var h = initHashSet[string]()
 var s = newSeq[string]()
 echo "part1: ", cavesystem.countPaths("start", h, "", s)
 echo "part2: ", allpaths.len
->>>>>>> 14a14b5925bb77d115e5c758e5e0e60a1950b90b
